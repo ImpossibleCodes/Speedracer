@@ -1,5 +1,5 @@
 {
-    "sketch": "Testing/PointLidar/PointLidar.ino",
+    "sketch": "Testing/Lidar/Lidar.ino",
     "output": "build",
     "configuration": "FlashFreq=80,UploadSpeed=921600,DebugLevel=none",
     "board": "esp32:esp32:esp32doit-devkit-v1",

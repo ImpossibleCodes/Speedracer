@@ -1,5 +1,5 @@
 // Updated ESP + Arduino Sample Code
-#include "TFMPlus.h" // Include TFMini Plus Library v1.5.0
+#include "src/TFMPlus.h" // Include TFMini Plus Library v1.5.0
 TFMPlus tfmP_l;      // Create a TFMini Plus object
 TFMPlus tfmP_r;      // Create a TFMini Plus object
 

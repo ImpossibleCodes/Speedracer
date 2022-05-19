@@ -1,5 +1,5 @@
-#include "rpLidar.h"
-#include "rpLidarTypes.h"
+#include "src/rpLidar.h"
+#include "src/rpLidarTypes.h"
 #include <esp_task_wdt.h>
 #include <Servo.h>
 
