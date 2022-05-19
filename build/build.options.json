@@ -1,0 +1,12 @@
+{
+  "additionalFiles": "..,..",
+  "builtInLibrariesFolders": "/Applications/Arduino.app/Contents/Java/libraries",
+  "builtInToolsFolders": "",
+  "compiler.optimization_flags": "",
+  "customBuildProperties": "",
+  "fqbn": "esp32:esp32:esp32doit-devkit-v1:FlashFreq=80,UploadSpeed=921600,DebugLevel=none",
+  "hardwareFolders": "/Users/neilagrawal/Library/Arduino15/packages",
+  "otherLibrariesFolders": "/Users/neilagrawal/Documents/Arduino/libraries",
+  "runtime.ide.version": "10607",
+  "sketchLocation": "/Users/neilagrawal/Projects/Speedracer/Testing/PointLidar/PointLidar.ino"
+}

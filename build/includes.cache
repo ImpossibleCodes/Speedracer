@@ -1,0 +1,22 @@
+[
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "/Users/neilagrawal/Library/Arduino15/packages/esp32/hardware/esp32/2.0.2/cores/esp32"
+  },
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "/Users/neilagrawal/Library/Arduino15/packages/esp32/hardware/esp32/2.0.2/variants/doitESP32devkitV1"
+  },
+  {
+    "Sourcefile": "/Users/neilagrawal/Projects/Speedracer/build/sketch/PointLidar.ino.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/Users/neilagrawal/Projects/Speedracer/build/sketch/TFMPlus.cpp",
+    "Include": "",
+    "Includepath": null
+  }
+]
