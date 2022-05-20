@@ -1,12 +1,21 @@
-// Updated ESP + Arduino Sample Code
+#include <Servo.h>
 #include "src/TFMPlus.h" // Include TFMini Plus Library v1.5.0
-TFMPlus tfmP_l;      // Create a TFMini Plus object
-TFMPlus tfmP_r;      // Create a TFMini Plus object
 
-static const int FRAMERATE = FRAME_50;
+static const int steeringPin = 32;
+static const int escPin = 26;
+static const int FRAMERATE = FRAME_100;
+
+Servo ESC;
+Servo STEER;
+
+TFMPlus tfmP_l; // Create a TFMini Plus object
+TFMPlus tfmP_r; // Create a TFMini Plus object
 
 void setup()
 {
+    ESC.attach(escPin);
+    STEER.attach(steeringPin);
+    STEER.write(100);
     Serial.begin(115200);                                       // Intialize terminal serial port
     delay(20);                                                  // Give port time to initalize
     Serial.println("\r\nTFMPlus Library Example w/ ESP32\r\n"); // say 'hello'
@@ -91,7 +100,7 @@ void setup()
         tfmP_r.printReply();
 
     // - - - - - - - - - - - - - - - - - - - - - - - -
-    delay(500); // And wait for half a second.
+    delay(5000); // And wait for half a second.
 }
 
 // Initialize variables
@@ -107,15 +116,29 @@ void loop()
     delay(1 / FRAMERATE * 1000); // Loop delay to match the 5Hz data frame rate  - Use: 1/(FRAME_RATE) * 1000
 
     if (tfmP_l.getData(tfDist_l, tfFlux_l, tfTemp_l) && tfmP_r.getData(tfDist_r, tfFlux_r, tfTemp_r))
-    {                                          // Get data from the device.
-        printf("L Dist:%04icm ", tfDist_l);    // display distance,
-        printf("L Flux:%05i ", tfFlux_l);      // display signal strength/quality,
-        printf("L Temp:%2i%s", tfTemp_l, "C"); // display temperature,
-        printf("\r");                        // end-of-line.
-        printf("R Dist:%04icm ", tfDist_r);    // display distance,
-        printf("R Flux:%05i ", tfFlux_r);      // display signal strength/quality,
-        printf("R Temp:%2i%s", tfTemp_r, "C"); // display temperature,
-        printf("\r\n");                      // end-of-line.
+    {                                                                                                // Get data from the device.
+        // Serial.println("L Dist: " + string(tfDist_l) + "L Flux: " + string(tfFlux_l) + "L Temp: " + string(tfTemp_l) + "C"); // left display distance, signal strength/quality, and temperature
+        // Serial.println("R Dist: " + string(tfDist_r) + "R Flux: " + string(tfFlux_r) + "R Temp: " + string(tfTemp_r) + "C"); // right display distance, signal strength/quality, and temperature                       // end-of-line.
+
+        if (tfDist_l > tfDist_r)
+        {
+            // Serial.println("L");
+            STEER.write(70);
+            ESC.writeMicroseconds(1565);
+        }
+        else if (tfDist_r > tfDist_l)
+        {
+            // Serial.println("R");
+            STEER.write(130);
+            ESC.writeMicroseconds(1565);
+        }
+        else
+        {
+            // Serial.println("N");
+            STEER.write(100);
+            ESC.writeMicroseconds(1565);
+        }
+        Serial.println("");
     }
     else
     {                        // If the command fails...

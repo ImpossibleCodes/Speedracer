@@ -10,22 +10,17 @@
     "Includepath": "/Users/neilagrawal/Library/Arduino15/packages/esp32/hardware/esp32/2.0.2/variants/doitESP32devkitV1"
   },
   {
-    "Sourcefile": "/Users/neilagrawal/Projects/Speedracer/build/sketch/Lidar.ino.cpp",
+    "Sourcefile": "/Users/neilagrawal/Projects/Speedracer/build/sketch/ESCSteerDemo.ino.cpp",
+    "Include": "Servo.h",
+    "Includepath": "/Users/neilagrawal/Documents/Arduino/libraries/ServoESP32/src"
+  },
+  {
+    "Sourcefile": "/Users/neilagrawal/Projects/Speedracer/build/sketch/ESCSteerDemo.ino.cpp",
     "Include": "",
     "Includepath": null
   },
   {
-    "Sourcefile": "/Users/neilagrawal/Projects/Speedracer/build/sketch/src/TFMPlus.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "/Users/neilagrawal/Projects/Speedracer/build/sketch/src/rpLidar.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "/Users/neilagrawal/Projects/Speedracer/build/sketch/src/rpLidarTypes.cpp",
+    "Sourcefile": "/Users/neilagrawal/Documents/Arduino/libraries/ServoESP32/src/Servo.cpp",
     "Include": "",
     "Includepath": null
   }

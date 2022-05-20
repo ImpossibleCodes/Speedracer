@@ -1,45 +1,43 @@
-# 1 "/Users/neilagrawal/Projects/Speedracer/Testing/Lidar/Lidar.ino"
-// #include "src/rpLidar.h"
-// #include "src/rpLidarTypes.h"
-// #include <esp_task_wdt.h>
+# 1 "/Users/neilagrawal/Projects/Speedracer/Testing/ESCSteerDemo/ESCSteerDemo.ino"
+# 2 "/Users/neilagrawal/Projects/Speedracer/Testing/ESCSteerDemo/ESCSteerDemo.ino" 2
 
-// rpLidar lidar(&Serial2, 115200, 13, 12);
+static const int steeringPin = 32;
+static const int escPin = 26;
+static const int motor = 13;
 
-// static void readPoints(void *parameter)
-// {
-//   while (true)
-//   {
-//     int result = lidar.cacheUltraCapsuledScanData();
-//     Serial.println(result, HEX);
-//   }
-// }
+Servo ESC;
+Servo STEER;
 
 void setup()
 {
-  pinMode(19, 0x02);
-  // digitalWrite(19, HIGH);
+  pinMode(motor, 0x02);
+  // digitalWrite(motor, HIGH);
+  ESC.attach(escPin);
+  STEER.attach(steeringPin);
   Serial.begin(115200);
-  Serial.println("Hello World");
-  // esp_task_wdt_init(36000, false); // turn off watchdog so core 0 task doesn't cause reset
-  // lidar.stopDevice();              // reset the device to be sure that the status is good
-  // delay(1);
-  // if (!lidar.start(express))
-  // {
-  //   Serial.println("failed to start");
-  //   return;
-  // } // start the express scan of the lidar\  esp_task_wdt_init(36000, false); //turn off watchdog so core 0 task doesn't cause reset
-
-  // xTaskCreatePinnedToCore(readPoints, "LidarPolling", 65536, NULL, 2, NULL, 0);
+  STEER.write(100);
 }
 
 void loop()
 {
-  digitalWrite(19, 0x1);
-  Serial.println("Hello World");
-  // // number of data points in cache: lidar._cached_scan_node_hq_count
-  // // float angle = (((float)_cached_scan_node_hq_buf[index].angle_z_q14) * 90.0 / 16384.0);
-  // // float distance = _cached_scan_node_hq_buf[index].dist_mm_q2 /4.0f;
-  // // each cache load contains a full 360 scan. If you slow down the rotations too much it will not fit and data will be lost (too many points per 360 deg for cache size allowable on ESP32)
-  // lidar.DebugPrintMeasurePoints(lidar._cached_scan_node_hq_count);
-  // delay(1);
+  digitalWrite(motor, 0x1);
+  delay(500);
+  digitalWrite(motor, 0x0);
+  delay(500);
+  // for (int i = 1565; i <= 1565; i++)
+  // {
+  //   ESC.writeMicroseconds(i);
+  //   Serial.println(i);
+  //   delay(2000);
+  // }
+  // delay(750);
+  // STEER.write(130);
+  // for (int i = 1475; i >= 1475; i--)
+  // {
+  //   ESC.writeMicroseconds(i);
+  //   Serial.println(i);
+  //   delay(2000);
+  // }
+  // delay(750);
+  // STEER.write(70);
 }

@@ -1,5 +1,5 @@
 {
-    "sketch": "Testing/Lidar/Lidar.ino",
+    "sketch": "Testing/ESCSteerDemo/ESCSteerDemo.ino",
     "output": "build",
     "configuration": "FlashFreq=80,UploadSpeed=921600,DebugLevel=none",
     "board": "esp32:esp32:esp32doit-devkit-v1",

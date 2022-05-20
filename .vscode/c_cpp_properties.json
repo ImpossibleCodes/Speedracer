@@ -211,6 +211,7 @@
                 "/Users/neilagrawal/Library/Arduino15/packages/esp32/hardware/esp32/2.0.2/tools/sdk/esp32/include/fb_gfx/include",
                 "/Users/neilagrawal/Library/Arduino15/packages/esp32/hardware/esp32/2.0.2/cores/esp32",
                 "/Users/neilagrawal/Library/Arduino15/packages/esp32/hardware/esp32/2.0.2/variants/doitESP32devkitV1",
+                "/Users/neilagrawal/Documents/Arduino/libraries/ServoESP32/src",
                 "/Users/neilagrawal/Library/Arduino15/packages/esp32/tools/xtensa-esp32-elf-gcc/gcc8_4_0-esp-2021r2/xtensa-esp32-elf/include/c++/8.4.0",
                 "/Users/neilagrawal/Library/Arduino15/packages/esp32/tools/xtensa-esp32-elf-gcc/gcc8_4_0-esp-2021r2/xtensa-esp32-elf/include/c++/8.4.0/xtensa-esp32-elf",
                 "/Users/neilagrawal/Library/Arduino15/packages/esp32/tools/xtensa-esp32-elf-gcc/gcc8_4_0-esp-2021r2/xtensa-esp32-elf/include/c++/8.4.0/backward",
