@@ -6,7 +6,7 @@ static const int escPin = 26;
 static const int FRAMERATE = FRAME_100;
 
 Servo ESC;
-Servo STEER;
+Servo steering;
 
 TFMPlus tfmP_l; // Create a TFMini Plus object
 TFMPlus tfmP_r; // Create a TFMini Plus object
@@ -14,8 +14,8 @@ TFMPlus tfmP_r; // Create a TFMini Plus object
 void setup()
 {
     ESC.attach(escPin);
-    STEER.attach(steeringPin);
-    STEER.write(100);
+    steering.attach(steeringPin);
+    steering.write(100);
     Serial.begin(115200);                                       // Intialize terminal serial port
     delay(20);                                                  // Give port time to initalize
     Serial.println("\r\nTFMPlus Library Example w/ ESP32\r\n"); // say 'hello'
@@ -123,19 +123,19 @@ void loop()
         if (tfDist_l > tfDist_r)
         {
             // Serial.println("L");
-            STEER.write(70);
+            steering.write(70);
             ESC.writeMicroseconds(1565);
         }
         else if (tfDist_r > tfDist_l)
         {
             // Serial.println("R");
-            STEER.write(130);
+            steering.write(130);
             ESC.writeMicroseconds(1565);
         }
         else
         {
             // Serial.println("N");
-            STEER.write(100);
+            steering.write(100);
             ESC.writeMicroseconds(1565);
         }
         Serial.println("");
