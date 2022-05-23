@@ -127,7 +127,7 @@ uint8_t rpLidar::isScanMode()
     return scanMode;
 }
 
-int rpLidar::getMeasurePoints(int16_t count)
+double *rpLidar::getMeasurePoints(int16_t count)
 {
     int farthest_point_angle = -1;
     double farthest_point_angle_distance = -1;
@@ -154,7 +154,9 @@ int rpLidar::getMeasurePoints(int16_t count)
         }
     }
 
-    return farthest_point_angle;
+    double farthest_point[2] = {(double)farthest_point_angle,
+                                farthest_point_angle_distance};
+    return farthest_point;
 }
 
 //-----------------------------------------------------------------------------------------------------//

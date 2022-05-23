@@ -53,7 +53,9 @@ int threshold = 15; // cm
 
 void loop()
 {
-    int farthest_point_angle = lidar.getMeasurePoints(lidar._cached_scan_node_hq_count); // get the lidar data
+    double *point = lidar.getMeasurePoints(lidar._cached_scan_node_hq_count); // get the lidar data
+    int farthest_point_angle = (int) point[0];
+    double farthest_point_distance = point[1];
     // lidar_buffer[angle] = distance
 
     // int farthest_point_angle = lidar_data;
@@ -81,7 +83,16 @@ void loop()
     // {
     //     steer.write(farthest_point_angle - 80);
     // }
-    Serial.println(farthest_point_angle);
-    steering.write(farthest_point_angle + 100);
-    esc.writeMicroseconds(1570);
+    if (farthest_point_distance < threshold && -20 <= farthest_point_angle && farthest_point_angle <= 20)
+    {
+        Serial.println("Detected Imminent Collision | " + (String) (farthest_point_angle) + " " + (String) (farthest_point_distance));
+        steering.write(farthest_point_angle + 100);
+        esc.writeMicroseconds(1570);
+    }
+    else
+    {
+        Serial.println(String(farthest_point_angle) +  " " + String(farthest_point_distance));
+        steering.write(farthest_point_angle + 100);
+        esc.writeMicroseconds(1570);
+    }
 }

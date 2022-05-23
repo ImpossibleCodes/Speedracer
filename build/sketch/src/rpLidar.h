@@ -70,7 +70,7 @@ public:
 	 */
 	sl_result cacheUltraCapsuledScanData();
 
-	int getMeasurePoints(int16_t _count);
+	double *getMeasurePoints(int16_t _count);
 	// Debug Funktionen
 	void DebugPrintMeasurePoints(int16_t _count);				///< prints Standard Data in normal Format in Serial Monitor
 	void DebugPrintDeviceErrorStatus(stDeviceStatus_t _status); ///< prints Status of lidar in Serial Monitor
