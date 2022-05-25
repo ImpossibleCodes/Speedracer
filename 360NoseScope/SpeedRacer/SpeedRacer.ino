@@ -51,11 +51,11 @@ void loop()
     scanDot dot;
     dot.angle = (((float)lidar._cached_scan_node_hq_buf[i].angle_z_q14) * 90.0 / 16384.0);
     dot.dist = lidar._cached_scan_node_hq_buf[i].dist_mm_q2 / 4.0f;
-    if (dot.angle > 180.0 and dot.angle < 220.0) {
+    if (dot.angle >= 180.0 and dot.angle <= 210) {
       LSUM += dot.dist;
       LNUM += 1.0;
     }
-    if (dot.angle > 140.0 and dot.angle < 180.0) {
+    if (dot.angle >= 120.0 and dot.angle <= 180.0) {
       RSUM += dot.dist;
       RNUM += 1.0;
     }
@@ -65,21 +65,20 @@ void loop()
   Serial.println(RSUM / RNUM);
   if (LSUM / LNUM < THRESHOLD or RSUM / RNUM < THRESHOLD) {
     if (LSUM / LNUM < RSUM / RNUM) {
-      Serial.println("R");
-      myservo.write(65);
-      esc.writeMicroseconds(1565);
+      Serial.println("L");
+      myservo.write(70);
     }
     else {
-      Serial.println("L");
-      myservo.write(115);
-      esc.writeMicroseconds(1565);
+      Serial.println("R");
+      myservo.write(180);
     }
 
   }
   else {
+    Serial.println("S");
     myservo.write(100);
-    esc.writeMicroseconds(1565);
   }
+  esc.writeMicroseconds(1565);
   delay(10);
   LSUM = 0.0;
   LNUM = 0.0;
