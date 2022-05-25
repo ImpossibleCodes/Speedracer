@@ -1,5 +1,5 @@
 {
-  "additionalFiles": "../..,../..,../..,../..,../..,../..,../..",
+  "additionalFiles": "..,..,..,..,..",
   "builtInLibrariesFolders": "/Applications/Arduino.app/Contents/Java/libraries",
   "builtInToolsFolders": "",
   "compiler.optimization_flags": "",
@@ -8,5 +8,5 @@
   "hardwareFolders": "/Users/neilagrawal/Library/Arduino15/packages",
   "otherLibrariesFolders": "/Users/neilagrawal/Documents/Arduino/libraries",
   "runtime.ide.version": "10607",
-  "sketchLocation": "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino"
+  "sketchLocation": "/Users/neilagrawal/Projects/Speedracer/360NoseScope/SpeedRacer/SpeedRacer.ino"
 }

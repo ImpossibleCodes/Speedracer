@@ -3,7 +3,7 @@
 #include <esp_task_wdt.h>
 #include <Servo.h>
 
-Servo myservo;
+Servo steering;
 
 rpLidar lidar(&Serial2, 115200, 13, 12);
 
@@ -34,8 +34,8 @@ void setup()
     Serial.println("failed to start");
     return;
   } // start the express scan of the lidar\  esp_task_wdt_init(36000, false); //turn off watchdog so core 0 task doesn't cause reset
-  myservo.attach(2);
-  myservo.write(40);
+  steering.attach(2);
+  steering.write(40);
   delay(20);
   xTaskCreatePinnedToCore(readPoints, "LidarPolling", 65536, NULL, 2, NULL, 0);
 }
@@ -50,15 +50,15 @@ void loop()
   Serial.println(direction1);
   if (direction1 == "L")
   {
-    myservo.write(50);
+    steering.write(50);
   }
   if (direction1 == "R")
   {
-    myservo.write(150);
+    steering.write(150);
   }
   else
   {
-    myservo.write(90);
+    steering.write(90);
   }
   delay(20);
 }

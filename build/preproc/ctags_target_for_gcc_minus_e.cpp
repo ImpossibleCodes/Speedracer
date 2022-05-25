@@ -1,107 +1,161 @@
-# 1 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino"
-# 2 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 2
-# 3 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 2
-# 4 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 2
-# 5 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 2
+# 1 "/Users/neilagrawal/Projects/Speedracer/360NoseScope/SpeedRacer/SpeedRacer.ino"
+# 2 "/Users/neilagrawal/Projects/Speedracer/360NoseScope/SpeedRacer/SpeedRacer.ino" 2
+# 3 "/Users/neilagrawal/Projects/Speedracer/360NoseScope/SpeedRacer/SpeedRacer.ino" 2
+# 4 "/Users/neilagrawal/Projects/Speedracer/360NoseScope/SpeedRacer/SpeedRacer.ino" 2
 
-static const int steeringPin = 32;
-static const int escPin = 26;
+# 6 "/Users/neilagrawal/Projects/Speedracer/360NoseScope/SpeedRacer/SpeedRacer.ino" 2
 
-Servo esc;
 Servo steering;
+Servo esc;
 
-rpLidar lidar(&Serial1, 115200, 13, 12);
+rpLidar lidar(&Serial2, 115200, 13, 12);
 
 static void readPoints(void *parameter)
 {
-    while (true)
-    {
-        int result = lidar.cacheUltraCapsuledScanData();
-        Serial.println(result, 16);
-    }
-}
-
-float average(int *pointCloud, int len)
-{
-    long sum = 0L;
-    for (int i = 0; i < len; i++)
-        sum += pointCloud[i];
-    return ((float)sum) / len;
+  while (true)
+  {
+    int result = lidar.cacheUltraCapsuledScanData();
+    Serial.println(result, 16);
+  }
 }
 
 void setup()
 {
-
-    Serial.begin(115200);
-    esp_task_wdt_init(36000, false); // turn off watchdog so core 0 task doesn't cause reset
-    lidar.stopDevice(); // reset the device to be sure that the status is good
-    delay(1);
-    if (!lidar.start(express))
-    {
-        Serial.println("failed to start");
-        return;
-    } // start the express scan of the lidar\  esp_task_wdt_init(36000, false); //turn off watchdog so core 0 task doesn't cause reset
-    pinMode(19, 0x02);
-    digitalWrite(19, 0x1);
-    esc.attach(escPin);
-    steering.attach(steeringPin);
-    steering.write(100);
-    delay(20);
-    xTaskCreatePinnedToCore(readPoints, "LidarPolling", 65536, 
-# 49 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 3 4
-                                                              __null
-# 49 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino"
-                                                                  , 2, 
-# 49 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 3 4
-                                                                       __null
-# 49 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino"
-                                                                           , 0);
+  Serial.begin(115200);
+  pinMode(19, 0x02);
+  digitalWrite(19, 0x1);
+  esp_task_wdt_init(36000, false); // turn off watchdog so core 0 task doesn't cause reset
+  lidar.stopDevice(); // reset the device to be sure that the status is good
+  delay(1);
+  if (!lidar.start(express))
+  {
+    Serial.println("failed to start");
+    return;
+  } // start the express scan of the lidar\  esp_task_wdt_init(36000, false); //turn off watchdog so core 0 task doesn't cause reset
+  steering.attach(32);
+  esc.attach(26);
+  steering.write(100);
+  // esc.writeMicroseconds(1565);
+  delay(20);
+  xTaskCreatePinnedToCore(readPoints, "LidarPolling", 65536, 
+# 39 "/Users/neilagrawal/Projects/Speedracer/360NoseScope/SpeedRacer/SpeedRacer.ino" 3 4
+                                                            __null
+# 39 "/Users/neilagrawal/Projects/Speedracer/360NoseScope/SpeedRacer/SpeedRacer.ino"
+                                                                , 2, 
+# 39 "/Users/neilagrawal/Projects/Speedracer/360NoseScope/SpeedRacer/SpeedRacer.ino" 3 4
+                                                                     __null
+# 39 "/Users/neilagrawal/Projects/Speedracer/360NoseScope/SpeedRacer/SpeedRacer.ino"
+                                                                         , 0);
 }
-
-int threshold = 15; // cm
 
 void loop()
 {
-    double *point = lidar.getMeasurePoints(lidar._cached_scan_node_hq_count); // get the lidar data
-    int farthest_point_angle = (int) point[0];
-    double farthest_point_distance = point[1];
-    // lidar_buffer[angle] = distance
+  // grab averages
+  float L2SUM = 0.0;
+  float L2NUM = 0.0;
+  float LSUM = 0.0;
+  float LNUM = 0.0;
+  float FSUM = 0.0;
+  float FNUM = 0.0;
+  float RSUM = 0.0;
+  float RNUM = 0.0;
+  float R2SUM = 0.0;
+  float R2NUM = 0.0;
+  float THRESHOLD = 800;
 
-    // int farthest_point_angle = lidar_data;
-    // double farthest_point_angle_distance = get<1>(lidar_data);
-
-    // for (int i = -80; i <= 80; i++)
-    // {
-    //     if (lidar_buffer[(i + 360) % 360] > farthest_point_angle_distance)
-    //     {
-    //         farthest_point_angle_distance = lidar_buffer[(i + 360) % 360];
-    //         farthest_point_angle = i;
-    //         Serial.println(i);
-    //     }
-    // }
-
-    // if (160 <= farthest_point_angle && farthest_point_angle <= 200) // straight
-    // {
-    //     steer.write(100);
-    // }
-    // else if (farthest_point_angle < 160) // turn left
-    // {
-    //     steer.write(farthest_point_angle - 80);
-    // }
-    // else if (200 < farthest_point_angle) // turn right
-    // {
-    //     steer.write(farthest_point_angle - 80);
-    // }
-    if (farthest_point_distance < threshold && -20 <= farthest_point_angle && farthest_point_angle <= 20)
+  for (int i = 0; i < lidar._cached_scan_node_hq_count; i++)
+  {
+    scanDot dot;
+    dot.angle = (((float)lidar._cached_scan_node_hq_buf[i].angle_z_q14) * 90.0 / 16384.0);
+    dot.dist = lidar._cached_scan_node_hq_buf[i].dist_mm_q2 / 4.0f;
+    if (dot.angle >= 162.0 and dot.angle <= 198.0) // F
     {
-        Serial.println("Detected Imminent Collision | " + (String) (farthest_point_angle) + " " + (String) (farthest_point_distance));
-        steering.write(farthest_point_angle + 100);
-        esc.writeMicroseconds(1570);
+      FSUM += dot.dist;
+      FNUM += 1.0;
+    }
+    else if (dot.angle > 198.0 and dot.angle <= 234.0) // R1
+    {
+      RSUM += dot.dist;
+      RNUM += 1.0;
+    }
+    else if (dot.angle >= 126.0 and dot.angle < 162.0) // L1
+    {
+      LSUM += dot.dist;
+      LNUM += 1.0;
+    }
+    else if (dot.angle > 234.0 and dot.angle <= 270.0) // R2
+    {
+      R2SUM += dot.dist;
+      R2NUM += 1.0;
+    }
+    else if (dot.angle >= 90.0 and dot.angle < 126.0) // L2
+    {
+      L2SUM += dot.dist;
+      L2NUM += 1.0;
+    }
+  }
+
+  // calculate averages
+  float L2 = L2SUM / L2NUM;
+  float L = LSUM / LNUM;
+  float F = FSUM / FNUM;
+  float R = RSUM / RNUM;
+  float R2 = R2SUM / R2NUM;
+
+  L = (L + L2) / 2;
+  R = (R + R2) / 2;
+
+  // print averages
+  // Serial.println(L2);
+  Serial.println(L);
+  Serial.println(F);
+  Serial.println(R);
+  // Serial.println(R2);
+
+  // control algorithm
+  if (F <= THRESHOLD) // crash imminent
+  {
+    if (L < THRESHOLD || R < THRESHOLD)
+    {
+      if (L < R + (THRESHOLD / 4))
+      {
+        Serial.println("BR");
+        steering.write(70);
+      }
+      else if (R < L + (THRESHOLD / 4))
+      {
+        Serial.println("BL");
+        steering.write(180);
+      }
     }
     else
     {
-        Serial.println(String(farthest_point_angle) + " " + String(farthest_point_distance));
-        steering.write(farthest_point_angle + 100);
-        esc.writeMicroseconds(1570);
+      Serial.println("B");
+      steering.write(100);
     }
+    esc.writeMicroseconds(1435);
+  }
+  else
+  {
+    if (L < THRESHOLD || R < THRESHOLD)
+    {
+      if (L < R + (THRESHOLD / 4))
+      {
+        Serial.println("R");
+        steering.write(180);
+      }
+      else if (R < L + (THRESHOLD / 4))
+      {
+        Serial.println("L");
+        steering.write(70);
+      }
+    }
+    else
+    {
+      Serial.println("F");
+      steering.write(100);
+    }
+    esc.writeMicroseconds(1565);
+  }
+  delay(10);
 }
