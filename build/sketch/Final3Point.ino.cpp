@@ -24,7 +24,7 @@ void loop();
 int speedCalc(int distance)
 {
   int temp = distance - 30;
-  int speedVal = int(0.00008 * (distance - 30) * (distance - 30) + 1568);
+  int speedVal = int(0.00008 * (distance - 30) * (distance - 30) + 1570);
   if (speedVal > 2000)
     return 2000;
   return speedVal;
@@ -171,13 +171,13 @@ void loop()
     maxDist = tfDist_l;
     steeringVal = 70;
   }
-  int threshold = (int)((0.1379 * speedVal) - 185.8621);
+  int threshold = (int)((0.1379 * speedVal) - 100);
   if (tfDist_f < threshold)
   {
 
     Serial.println("REVERSE");
     steeringVal = -steeringVal;
-    speedVal = 1000;
+    speedVal = 1300;
   }
   else
   {
