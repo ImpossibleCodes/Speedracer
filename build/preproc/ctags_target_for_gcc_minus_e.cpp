@@ -1,107 +1,182 @@
-# 1 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino"
-# 2 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 2
-# 3 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 2
-# 4 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 2
-# 5 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 2
+# 1 "/Users/neilagrawal/Projects/Speedracer/Final3Point/Final3Point.ino"
+// Final Code, Kaushik
+# 3 "/Users/neilagrawal/Projects/Speedracer/Final3Point/Final3Point.ino" 2
+# 4 "/Users/neilagrawal/Projects/Speedracer/Final3Point/Final3Point.ino" 2
 
 static const int steeringPin = 32;
 static const int escPin = 26;
+static const int FRAMERATE = 0x03E8;
+
+TFMPlus tfmP_s;
+TFMPlus tfmP_f;
 
 Servo esc;
 Servo steering;
 
-rpLidar lidar(&Serial1, 115200, 13, 12);
-
-static void readPoints(void *parameter)
+int speedCalc(int distance)
 {
-    while (true)
-    {
-        int result = lidar.cacheUltraCapsuledScanData();
-        Serial.println(result, 16);
-    }
-}
-
-float average(int *pointCloud, int len)
-{
-    long sum = 0L;
-    for (int i = 0; i < len; i++)
-        sum += pointCloud[i];
-    return ((float)sum) / len;
+  int temp = distance - 30;
+  int speedVal = int(0.00008 * (distance - 30) * (distance - 30) + 1568);
+  if (speedVal > 2000)
+    return 2000;
+  return speedVal;
 }
 
 void setup()
 {
 
-    Serial.begin(115200);
-    esp_task_wdt_init(36000, false); // turn off watchdog so core 0 task doesn't cause reset
-    lidar.stopDevice(); // reset the device to be sure that the status is good
-    delay(1);
-    if (!lidar.start(express))
-    {
-        Serial.println("failed to start");
-        return;
-    } // start the express scan of the lidar\  esp_task_wdt_init(36000, false); //turn off watchdog so core 0 task doesn't cause reset
-    pinMode(19, 0x02);
-    digitalWrite(19, 0x1);
-    esc.attach(escPin);
-    steering.attach(steeringPin);
-    steering.write(100);
-    delay(20);
-    xTaskCreatePinnedToCore(readPoints, "LidarPolling", 65536, 
-# 49 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 3 4
-                                                              __null
-# 49 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino"
-                                                                  , 2, 
-# 49 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino" 3 4
-                                                                       __null
-# 49 "/Users/neilagrawal/Projects/Speedracer/Final/Final.ino"
-                                                                           , 0);
+  esc.attach(escPin);
+  steering.attach(steeringPin);
+  steering.write(100);
+
+  Serial.begin(115200); // Intialize terminal serial port
+  delay(20); // Give port time to initalize
+  Serial.println("\r\nTFMPlus Library Example w/ ESP32\r\n");
+  Serial1.begin(115200, 0x800001c, 5, 18); // 5 , 18 .   22, 23 .   17, 16
+  delay(20);
+  Serial2.begin(115200, 0x800001c, 22, 23);
+  delay(20); // Give port time to initalize
+  tfmP_s.begin(&Serial1); // Initialize device library object and...
+  tfmP_f.begin(&Serial2);
+
+  Serial.println("Data-Frame rate: ");
+  if (tfmP_s.sendCommand(0x00030606 /* These commands each return*/, FRAMERATE))
+  {
+    Serial.println(FRAMERATE);
+  }
+  else
+    tfmP_s.printReply();
+
+  delay(500);
+
+  Serial.println("Data-Frame rate: ");
+  if (tfmP_f.sendCommand(0x00030606 /* These commands each return*/, FRAMERATE))
+  {
+    Serial.println(FRAMERATE);
+  }
+  else
+    tfmP_f.printReply();
+
+  delay(500);
+  if (tfmP_s.sendCommand(0x01050505 /*           "*/, 0))
+  {
+    Serial.println("CM");
+  }
+  else
+    tfmP_s.printReply();
+
+  delay(500);
+
+  if (tfmP_f.sendCommand(0x01050505 /*           "*/, 0))
+  {
+    Serial.println("CM");
+  }
+  else
+    tfmP_f.printReply();
+
+  // - - - - - - - - - - - - - - - - - - - - - - - -
+  delay(5000); // And wait for 5 seconds.
+  esc.writeMicroseconds(1560);
 }
 
-int threshold = 15; // cm
+// Initialize variables
+int16_t tfDist_l = 0; // Distance to object in centimeters
+int16_t tfFlux_l = 0; // Strength or quality of return signal
+int16_t tfTemp_l = 0; // Internal temperature of Lidar sensor chip
+int16_t tfDist_r = 0; // Distance to object in centimeters
+int16_t tfFlux_r = 0; // Strength or quality of return signal
+int16_t tfTemp_r = 0; // Internal temperature of Lidar sensor chip
+int16_t tfDist_f = 0; // Distance to object in centimeters
+int16_t tfFlux_f = 0; // Strength or quality of return signal
+int16_t tfTemp_f = 0; // Internal temperature of Lidar sensor chip
+int16_t maxDist = 0; // maximum distance found by sensors
+int steeringVal = 100;
+int speedVal = 1565;
+bool left = true; // toggle for reading
 
 void loop()
 {
-    double *point = lidar.getMeasurePoints(lidar._cached_scan_node_hq_count); // get the lidar data
-    int farthest_point_angle = (int) point[0];
-    double farthest_point_distance = point[1];
-    // lidar_buffer[angle] = distance
 
-    // int farthest_point_angle = lidar_data;
-    // double farthest_point_angle_distance = get<1>(lidar_data);
+  Serial1.end();
+  delay(10);
+  Serial1.flush();
 
-    // for (int i = -80; i <= 80; i++)
-    // {
-    //     if (lidar_buffer[(i + 360) % 360] > farthest_point_angle_distance)
-    //     {
-    //         farthest_point_angle_distance = lidar_buffer[(i + 360) % 360];
-    //         farthest_point_angle = i;
-    //         Serial.println(i);
-    //     }
-    // }
+  if (!left)
+  {
+    left = true;
+    Serial1.begin(115200, 0x800001c, 5, 18);
+  }
+  else
+  {
+    left = false;
+    Serial1.begin(115200, 0x800001c, 17, 16);
+  }
 
-    // if (160 <= farthest_point_angle && farthest_point_angle <= 200) // straight
-    // {
-    //     steer.write(100);
-    // }
-    // else if (farthest_point_angle < 160) // turn left
-    // {
-    //     steer.write(farthest_point_angle - 80);
-    // }
-    // else if (200 < farthest_point_angle) // turn right
-    // {
-    //     steer.write(farthest_point_angle - 80);
-    // }
-    if (farthest_point_distance < threshold && -20 <= farthest_point_angle && farthest_point_angle <= 20)
+  if (left)
+  {
+    if (!tfmP_s.getData(tfDist_l, tfFlux_l, tfTemp_l))
     {
-        Serial.println("Detected Imminent Collision | " + (String) (farthest_point_angle) + " " + (String) (farthest_point_distance));
-        steering.write(farthest_point_angle + 100);
-        esc.writeMicroseconds(1570);
+      tfmP_s.printFrame();
     }
-    else
+  }
+  else
+  {
+    if (!tfmP_s.getData(tfDist_r, tfFlux_r, tfTemp_r))
     {
-        Serial.println(String(farthest_point_angle) + " " + String(farthest_point_distance));
-        steering.write(farthest_point_angle + 100);
-        esc.writeMicroseconds(1570);
+      tfmP_s.printFrame();
     }
+  }
+
+  if (!tfmP_f.getData(tfDist_f, tfFlux_f, tfTemp_f))
+  {
+    tfDist_f = 100;
+  }
+
+  // steering code
+  if (tfDist_f > tfDist_l && tfDist_f > tfDist_r)
+  {
+
+    Serial.println("F");
+    maxDist = tfDist_f;
+    steeringVal = 100;
+
+    if (tfDist_r < 20)
+    {
+      steeringVal = 90;
+    }
+    else if (tfDist_l < 20)
+    {
+      steeringVal = 110;
+    }
+  }
+  else if (tfDist_r > tfDist_l)
+  {
+
+    Serial.println("R");
+    maxDist = tfDist_r;
+    steeringVal = 180;
+  }
+  else
+  {
+
+    Serial.println("L");
+    maxDist = tfDist_l;
+    steeringVal = 70;
+  }
+  int threshold = (int)((0.1379 * speedVal) - 185.8621);
+  if (tfDist_f < threshold)
+  {
+
+    Serial.println("REVERSE");
+    steeringVal = -steeringVal;
+    speedVal = 1000;
+  }
+  else
+  {
+
+    speedVal = speedCalc(maxDist);
+  }
+
+  esc.writeMicroseconds(speedVal);
+  steering.write(steeringVal);
 }
